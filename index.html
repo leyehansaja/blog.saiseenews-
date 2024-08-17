@@ -20,21 +20,35 @@
 </head>
 <body>
     <iframe id="content-frame" src="https://script.google.com/macros/s/AKfycbwFh8x2TSx53_GvqMWWtIlpIb22MzMuXbtRC_xgEdfeuZ9XAI0k_pAWzLojU8RXl_nZUg/exec" frameborder="0"></iframe>
-
     <script>
         // Menangani navigasi di dalam iframe
         window.addEventListener('message', function(event) {
             if (event.data.type === 'navigation') {
                 history.pushState(null, '', event.data.url);
+                console.log('Navigation event received:', event.data.url);
             }
         }, false);
 
         // Menangani navigasi browser
         window.addEventListener('popstate', function() {
+            const newPath = window.location.pathname;
+            console.log('Popstate event, new path:', newPath);
             document.getElementById('content-frame').contentWindow.postMessage({
                 type: 'urlChange',
-                url: window.location.pathname
+                url: newPath
             }, '*');
+        });
+
+        // Menangani load awal
+        window.addEventListener('load', function() {
+            const initialPath = window.location.pathname;
+            console.log('Initial load, path:', initialPath);
+            if (initialPath !== '/') {
+                document.getElementById('content-frame').contentWindow.postMessage({
+                    type: 'urlChange',
+                    url: initialPath
+                }, '*');
+            }
         });
     </script>
 </body>
