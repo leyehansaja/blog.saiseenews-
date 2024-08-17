@@ -19,12 +19,23 @@
     </style>
 </head>
 <body>
-    <iframe src="https://script.google.com/macros/s/AKfycbwFh8x2TSx53_GvqMWWtIlpIb22MzMuXbtRC_xgEdfeuZ9XAI0k_pAWzLojU8RXl_nZUg/exec" frameborder="0"></iframe>
+    <iframe id="content-frame" src="https://script.google.com/macros/s/AKfycbwFh8x2TSx53_GvqMWWtIlpIb22MzMuXbtRC_xgEdfeuZ9XAI0k_pAWzLojU8RXl_nZUg/exec" frameborder="0"></iframe>
 
     <script>
-        if (window.history.replaceState) {
-            window.history.replaceState(null, null, window.location.href);
-        }
+        // Menangani navigasi di dalam iframe
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'navigation') {
+                history.pushState(null, '', event.data.url);
+            }
+        }, false);
+
+        // Menangani navigasi browser
+        window.addEventListener('popstate', function() {
+            document.getElementById('content-frame').contentWindow.postMessage({
+                type: 'urlChange',
+                url: window.location.pathname
+            }, '*');
+        });
     </script>
 </body>
 </html>
