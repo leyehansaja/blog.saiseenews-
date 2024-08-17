@@ -29,6 +29,19 @@
             }
         }, false);
 
+        function handleNavigation() {
+  var path = window.location.pathname;
+  document.getElementById('content-frame').contentWindow.postMessage({
+    type: 'urlChange',
+    url: path
+  }, '*');
+}
+
+window.addEventListener('popstate', handleNavigation);
+
+// Panggil handleNavigation saat halaman dimuat
+window.addEventListener('load', handleNavigation);
+
         // Menangani navigasi browser
         window.addEventListener('popstate', function() {
             const newPath = window.location.pathname;
