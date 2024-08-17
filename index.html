@@ -19,33 +19,23 @@
     </style>
 </head>
 <body>
-    <iframe id="content-frame" src="" frameborder="0"></iframe>
+    <iframe id="content-frame" src="https://script.google.com/macros/s/AKfycbwFh8x2TSx53_GvqMWWtIlpIb22MzMuXbtRC_xgEdfeuZ9XAI0k_pAWzLojU8RXl_nZUg/exec" frameborder="0"></iframe>
 
     <script>
-        const scriptUrl = 'https://script.google.com/macros/s/AKfycbwFh8x2TSx53_GvqMWWtIlpIb22MzMuXbtRC_xgEdfeuZ9XAI0k_pAWzLojU8RXl_nZUg/exec';
-        
-        function loadContent(path) {
-            const iframe = document.getElementById('content-frame');
-            const url = new URL(scriptUrl);
-            url.searchParams.set('path', path);
-            iframe.src = url.toString();
-        }
-
-        // Load initial content
-        loadContent(window.location.pathname);
-
-        // Handle browser navigation
-        window.addEventListener('popstate', function() {
-            loadContent(window.location.pathname);
-        });
-
-        // Handle navigation within iframe
+        // Menangani navigasi di dalam iframe
         window.addEventListener('message', function(event) {
             if (event.data.type === 'navigation') {
                 history.pushState(null, '', event.data.url);
-                loadContent(event.data.url);
             }
         }, false);
+
+        // Menangani navigasi browser
+        window.addEventListener('popstate', function() {
+            document.getElementById('content-frame').contentWindow.postMessage({
+                type: 'urlChange',
+                url: window.location.pathname
+            }, '*');
+        });
     </script>
 </body>
 </html>
