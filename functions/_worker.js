@@ -10,6 +10,10 @@ export async function onRequest(context) {
     const newUrl = new URL(scriptUrl);
     newUrl.searchParams.set('path', url.pathname);
     console.log('Redirecting to:', newUrl.toString());
-    return fetch(newUrl);
+    const response = await fetch(newUrl);
+    const html = await response.text();
+    return new Response(html, {
+      headers: { 'Content-Type': 'text/html' },
+    });
   }
 }
